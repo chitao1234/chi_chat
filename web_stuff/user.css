@@ -1,0 +1,82 @@
+body {
+    background-color: #f5f6f7;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", "WenQuanYi Micro Hei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+div.message {
+    background-color: #fff;
+    width: 50vw;
+    white-space: pre-wrap;
+}
+
+span.person, span.address {
+    color: #838384;
+    font-size: small;
+}
+
+div#message_area {
+    width: 70vw;
+    height: 50vh;
+    overflow-y: auto;
+    display: inline-block;
+}
+
+div#up_list {
+    width: 25vw;
+    height: 50vh;
+    overflow-y: auto;
+    display: inline-block;
+    vertical-align: top;
+}
+
+div#error_message {
+    color: #f00;
+    font-weight: 900;
+    font-size: 2em;
+    text-align: center;
+    vertical-align: top;
+    width: fit-content;
+    display: inline-block;
+    white-space: pre-wrap;
+}
+
+div#send_area {
+    display: inline-block;
+}
+
+textarea#input_area {
+    height: 20vh;
+    width: 60vw;
+    resize: none;
+}
+
+p.info {
+    color: #00f;
+    font-weight: 300;
+}
+
+p.self {
+    color: #008040;
+}
+
+p.content_text {
+    overflow-wrap: break-word;
+}
+
+img.svg_label {
+    height: 1.15em;
+    width: 1.15em;
+}
+
+img.content_image {
+    display: block;
+    max-width: 40vw;
+    max-height: 30vw;
+    width: auto;
+    height: auto;
+}
+
+img.content_file {
+    width: 10em;
+    height: 10em;
+}

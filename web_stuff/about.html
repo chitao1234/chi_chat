@@ -1,0 +1,30 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>关于</title>
+    <meta name="description" content="Chi Chat About">
+    <meta name="author" content="chitaotao">
+</head>
+
+<body>
+    <h1>关于 Chi Chat</h1>
+    <p>Chi Chat, 版本 0.1.1, 使用 GNU Affero General Public License v3.0 or later 协议.</p>
+    <p>运行时环境: Node.js <span id="node"></span> Electron <span id="electron"></span> Chromium <span id="chrome"></span>
+    </p>
+    <script>
+        const replaceText = (selector, text) => {
+            const element = document.getElementById(selector)
+            if (element) element.innerText = text
+        }
+
+        for (const type of ['chrome', 'node', 'electron']) {
+            replaceText(type, process.versions[type])
+        }
+    </script>
+</body>
+
+</html>

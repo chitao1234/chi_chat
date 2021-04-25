@@ -1,0 +1,26 @@
+{
+    "name": "chi-chat",
+    "version": "0.1.0",
+    "author": "chitaotao",
+    "license": "AGPL-3.0-or-later",
+    "description": "My Electron app",
+    "main": "main.js",
+    "devDependencies": {
+        "electron": "^4.2.9",
+        "electron-builder": "^22.10.5"
+    },
+    "build": {
+        "appId": "com.chitaotao.chat",
+        "mac": {
+            "category": "your.app.category.type"
+        }
+    },
+    "scripts": {
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder",
+        "start": "electron ."
+    },
+    "dependencies": {
+        "normalize.css": "^8.0.1"
+    }
+}

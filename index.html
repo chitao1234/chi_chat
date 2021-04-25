@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Chi Chat Client</title>
+    <meta name="description" content="Chi Chat Client" />
+    <meta name="author" content="chi" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+
+    <link rel="stylesheet" type="text/css" href="node_modules/normalize.css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="web_stuff/user.css" />
+
+    <script src="web_stuff/string.polyfill.js"></script>
+    <script src="web_stuff/basic_function.js"></script>
+</head>
+
+<body>
+    <h1>Chi Chat</h1>
+    <div id="server_wrapper">
+        <label class="label" id="server_label">主服务器地址:</label>
+        <div id="server_setting">
+            <input type="text" id="server_address" />
+            <button id="update_server_address">确定</button>
+        </div>
+    </div>
+    <div id="message_area"></div>
+    <div id="up_list">
+        <p>在线用户</p>
+    </div>
+    <br />
+    <div id="menu_bar">
+        <label class="label" id="username_label">用户名：</label>
+        <div id="username_wrapper">
+            <input type="text" id="username" />
+            <button id="username_submit">确定</button>
+        </div>
+        <button class="" id="image_select" onclick=""><img class="svg_label" src="asset/image.svg" /></button>
+        <button class="" id="file_select" onclick=""><img class="svg_label" src="asset/file_upload.svg" /></button>
+    </div>
+    <br />
+    <div id="send_area">
+        <form action="javascript:void(0);" id="message_send">
+            <label class="label">信息：</label>
+            <textarea id="input_area"></textarea>
+            <input type="submit" id="send" value="发送" />
+        </form>
+    </div>
+
+    <div id="error_message"></div>
+
+    <script src="web_stuff/network_document.js"></script>
+    <script src="web_stuff/debug_stuff.js"></script>
+</body>
+
+</html>
