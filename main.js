@@ -4,8 +4,8 @@ var mainWindow;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 1000
+        width: 1024,
+        height: 800
     });
 
     const mainMenu = Menu.buildFromTemplate(Menus);
@@ -38,11 +38,11 @@ const Menus = [
         label: '关于',
         click: () => {
             let newWindow = new BrowserWindow({
-                width: 800,
-                height: 600
+                width: 640,
+                height: 480
             });
             newWindow.setMenuBarVisibility(false);
-            newWindow.loadFile('web_stuff/about.html');
+            newWindow.loadFile('web/about.html');
         }
     }
 ];

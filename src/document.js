@@ -5,6 +5,9 @@ var error_message = document.getElementById('error_message');
 var up_list = document.getElementById('up_list');
 var username = '';
 
+var separater_special = ':';
+var separater = '|';
+
 var server;
 var socket;
 
@@ -109,7 +112,9 @@ document.getElementById('username_submit').addEventListener('click', function (e
     document.getElementById('username_wrapper').style.display = 'none';
     document.getElementById('username_label').innerText += username;
     up_list_update('localhost', username);
-    data_send_raw(':::' + 'NAME' + '|||' + username);
+    if (data_send_raw) {
+        data_send_raw(separater_special + 'NAME' + separater + username);
+    }
 });
 
 function reset_username() {

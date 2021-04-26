@@ -1,13 +1,15 @@
 {
     "name": "chi-chat",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "author": "chitaotao",
     "license": "AGPL-3.0-or-later",
     "description": "My Electron app",
     "main": "main.js",
     "devDependencies": {
+        "@types/node": "^14.14.41",
         "electron": "^4.2.9",
-        "electron-builder": "^22.10.5"
+        "electron-builder": "^22.10.5",
+        "typescript": "^4.2.4"
     },
     "build": {
         "appId": "com.chitaotao.chat",
@@ -16,11 +18,13 @@
         }
     },
     "scripts": {
-        "pack": "electron-builder --dir",
-        "dist": "electron-builder",
-        "start": "electron ."
+        "compile": "tsc",
+        "pack": "tsc && electron-builder --dir",
+        "dist": "tsc && electron-builder",
+        "start": "tsc && electron ."
     },
     "dependencies": {
+        "commonjs": "^0.0.1",
         "normalize.css": "^8.0.1"
     }
 }

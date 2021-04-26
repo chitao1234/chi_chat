@@ -10,10 +10,15 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 
     <link rel="stylesheet" type="text/css" href="node_modules/normalize.css/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="web_stuff/user.css" />
+    <link rel="stylesheet" type="text/css" href="web/main.css" />
 
-    <script src="web_stuff/string.polyfill.js"></script>
-    <script src="web_stuff/basic_function.js"></script>
+    <script>
+        // dirty hacks for typescript
+        var exports = {};
+    </script>
+
+    <script src="compiled/string.polyfill.js"></script>
+    <script src="compiled/basic_function.js"></script>
 </head>
 
 <body>
@@ -50,9 +55,9 @@
 
     <div id="error_message"></div>
 
-    <script src="web_stuff/document.js"></script>
-    <script src="web_stuff/network.js"></script>
-    <script src="web_stuff/debug_stuff.js"></script>
+    <script src="compiled/document.js"></script>
+    <script src="compiled/network.js"></script>
+    <script src="compiled/debug_stuff.js"></script>
 </body>
 
 </html>

@@ -80,6 +80,11 @@
   resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-10.17.57.tgz?cache=0&sync_timestamp=1618432510459&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-10.17.57.tgz#b99c5dbd97ad1af6b912fc6594d3c0e1e1b01423"
   integrity sha1-uZxdvZetGva5EvxllNPA4eGwFCM=
 
+"@types/node@^14.14.41":
+  version "14.14.41"
+  resolved "https://registry.nlark.com/@types/node/download/@types/node-14.14.41.tgz#d0b939d94c1d7bd53d04824af45f1139b8c45615"
+  integrity sha1-0Lk52Uwde9U9BIJK9F8RObjEVhU=
+
 "@types/plist@^3.0.1":
   version "3.0.2"
   resolved "https://registry.npm.taobao.org/@types/plist/download/@types/plist-3.0.2.tgz#61b3727bba0f5c462fe333542534a0c3e19ccb01"
@@ -126,6 +131,11 @@ ansi-align@^3.0.0:
   integrity sha1-tTazcc9ofKrvI2wY0+If43l0Z8s=
   dependencies:
     string-width "^3.0.0"
+
+ansi-font@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.npm.taobao.org/ansi-font/download/ansi-font-0.0.2.tgz#890301bd5841462fd39c0b7709afd1f525143331"
+  integrity sha1-iQMBvVhBRi/TnAt3Ca/R9SUUMzE=
 
 ansi-regex@^2.0.0:
   version "2.1.1"
@@ -517,6 +527,14 @@ commander@^5.0.0:
   version "5.1.0"
   resolved "https://registry.npm.taobao.org/commander/download/commander-5.1.0.tgz?cache=0&sync_timestamp=1616363849438&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcommander%2Fdownload%2Fcommander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
   integrity sha1-Rqu9FlL44Fm92u+Zu9yyrZzxea4=
+
+commonjs@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.nlark.com/commonjs/download/commonjs-0.0.1.tgz#65c531dcff6565ca7c95ddfc96622b89cc0294d5"
+  integrity sha1-ZcUx3P9lZcp8ld38lmIricwClNU=
+  dependencies:
+    system ">=0.0.1"
+    test ">=0.0.5"
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -2112,6 +2130,11 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
+system@>=0.0.1:
+  version "2.0.1"
+  resolved "https://registry.npm.taobao.org/system/download/system-2.0.1.tgz#d26a85135ee7f36e054e7f0eec4467f3b1dd9742"
+  integrity sha1-0mqFE17n824FTn8O7ERn87Hdl0I=
+
 temp-file@^3.3.7:
   version "3.3.7"
   resolved "https://registry.npm.taobao.org/temp-file/download/temp-file-3.3.7.tgz#686885d635f872748e384e871855958470aeb18a"
@@ -2119,6 +2142,13 @@ temp-file@^3.3.7:
   dependencies:
     async-exit-hook "^2.0.1"
     fs-extra "^8.1.0"
+
+test@>=0.0.5:
+  version "0.6.0"
+  resolved "https://registry.nlark.com/test/download/test-0.6.0.tgz#5986ac445ec17754322512d104ba32c8a63e938e"
+  integrity sha1-WYasRF7Bd1QyJRLRBLoyyKY+k44=
+  dependencies:
+    ansi-font "0.0.2"
 
 textextensions@^5.11.0:
   version "5.12.0"
@@ -2191,6 +2221,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.npm.taobao.org/typedarray/download/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+typescript@^4.2.4:
+  version "4.2.4"
+  resolved "https://registry.nlark.com/typescript/download/typescript-4.2.4.tgz?cache=0&sync_timestamp=1619421721543&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftypescript%2Fdownload%2Ftypescript-4.2.4.tgz#8610b59747de028fda898a8aef0e103f156d0961"
+  integrity sha1-hhC1l0feAo/aiYqK7w4QPxVtCWE=
 
 unique-string@^2.0.0:
   version "2.0.0"
