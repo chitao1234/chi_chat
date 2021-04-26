@@ -1,10 +1,12 @@
 var form = document.getElementById('message_send');
 var input_area = document.getElementById('input_area');
 var message_area = document.getElementById('message_area');
-var image_select = document.getElementById('image_select');
 var error_message = document.getElementById('error_message');
 var up_list = document.getElementById('up_list');
 var username = '';
+
+var server;
+var socket;
 
 function html_construct(content, type) {
     let outputHTML = '';
@@ -25,6 +27,9 @@ function html_construct(content, type) {
     }
     return outputHTML;
 }
+
+var data_send;
+var data_send_raw;
 
 function message_add_wrapper(content, type) {
     data_send(content, type);
@@ -101,7 +106,14 @@ function up_list_update(address, name) {
 
 document.getElementById('username_submit').addEventListener('click', function (event) {
     username = document.getElementById('username').value;
-    document.getElementById('menu_bar').removeChild(document.getElementById('username_wrapper'));
+    document.getElementById('username_wrapper').style.display = 'none';
     document.getElementById('username_label').innerText += username;
     up_list_update('localhost', username);
+    data_send_raw(':::' + 'NAME' + '|||' + username);
 });
+
+function reset_username() {
+    document.getElementById('username_wrapper').style.display = 'block';
+    document.getElementById('username_label').innerText = '用户名：';
+    up_list_update('localhost', '');
+}
