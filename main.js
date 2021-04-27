@@ -50,6 +50,8 @@ const Menus = [
 app.whenReady().then(() => {
     createWindow()
 
+    mainWindow.on('focus', () => mainWindow.flashFrame(false));
+
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
@@ -58,10 +60,8 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-    
+    mainWindow.webContents.executeJavaScript('end()');
     if (process.platform !== 'darwin') {
-        mainWindow.webContents.executeJavaScript('server.close();');
-        mainWindow.webContents.executeJavaScript('socket.end();socket.destroy();');
         app.quit();
     }
 })
