@@ -1,8 +1,8 @@
 const { app, BrowserWindow, Menu } = require('electron');
 
-var mainWindow;
+let mainWindow;
 
-function createWindow() {
+function createWindow () {
     mainWindow = new BrowserWindow({
         width: 1024,
         height: 800
@@ -37,7 +37,7 @@ const Menus = [
     {
         label: '关于',
         click: () => {
-            let newWindow = new BrowserWindow({
+            const newWindow = new BrowserWindow({
                 width: 640,
                 height: 480
             });
@@ -48,7 +48,7 @@ const Menus = [
 ];
 
 app.whenReady().then(() => {
-    createWindow()
+    createWindow();
 
     mainWindow.on('focus', () => mainWindow.flashFrame(false));
 
@@ -56,12 +56,12 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
         }
-    })
-})
+    });
+});
 
 app.on('window-all-closed', () => {
     mainWindow.webContents.executeJavaScript('end()');
     if (process.platform !== 'darwin') {
         app.quit();
     }
-})
+});

@@ -1,340 +1,360 @@
-import { Socket, Server, createServer, connect } from 'net'
+import { Socket, Server, createServer, connect } from 'net';
 
-const form = document.getElementById('message_send')!
-const input_area = <HTMLInputElement>document.getElementById('input_area')
-const message_area = document.getElementById('message_area')!
-const error_message = document.getElementById('error_message')!
-const up_list = document.getElementById('up_list')!
-const main_wrapper = document.getElementById('main_wrapper')!
-const username_wrapper = document.getElementById('username_wrapper')!
-const username_label = document.getElementById('username_label')!
-let username = ''
-const separater_special = ':'
-const separater_port = ', '
-const separater = '|'
-const separater_length = 1 // ':', '|'
-let socket: Socket
-let server: Server
+const { BrowserWindow, dialog } = require('electron').remote;
 
-main_wrapper.style.display = 'none'
+const mainWindow = BrowserWindow.getFocusedWindow();
 
-function html_construct (content: string, type: string) {
-  let outputHTML = ''
-  switch (type) {
+function getDatetime () {
+    const date = new Date();
+    const milisecond = String(date.getMilliseconds()).padStart(3, '0');
+    const second = String(date.getSeconds()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+    const hour = String(date.getHours()).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const datetime = year + '/' + month + '/' + day + ' ' + hour + ':' + minute + ':' + second + '.' + milisecond;
+    return datetime;
+}
+
+const form = document.getElementById('message_send')!;
+const inputArea = <HTMLInputElement>document.getElementById('input_area');
+const messageArea = document.getElementById('message_area')!;
+const errorMessage = document.getElementById('error_message')!;
+const uplist = document.getElementById('up_list')!;
+const mainWrapper = document.getElementById('main_wrapper')!;
+const usernameWrapper = document.getElementById('username_wrapper')!;
+const usernameLabel = document.getElementById('username_label')!;
+let username = '';
+const separater = '|';
+const separaterSpecial = ':';
+const separaterPort = ', ';
+const separaterLength = 1; // ':', '|'
+let socket: Socket;
+let server: Server;
+
+mainWrapper.style.display = 'none';
+
+function HTMLConstruct (content: string, type: string) {
+    let outputHTML = '';
+    switch (type) {
     case 'image':
-      outputHTML += '<img class="content_image" src="' + content + '" />'
-      break
+        outputHTML += '<img class="content_image" src="' + content + '" />';
+        break;
     case 'file':
-      outputHTML += '<img class="content_file" src="asset/file.svg" /><label class="content_file_label">' + content + '</label>'
-      break
+        outputHTML += '<img class="content_file" src="asset/file.svg" /><label class="content_file_label">' + content + '</label>';
+        break;
     case 'html':
-      // TODO: 图文混排
-      break
+        // TODO: 图文混排
+        break;
     case 'text':
     default:
-      outputHTML += '<p class="content_text">' + content + '</p>'
-      break
-  }
-  return outputHTML
+        outputHTML += '<p class="content_text">' + content + '</p>';
+        break;
+    }
+    return outputHTML;
 }
 
-let data_send: (arg1: string, arg2: string) => void
-let data_send_raw: (arg1: string, arg2: string) => void
+let dataSend: (arg1: string, arg2: string) => void;
+let dataSendRaw: (arg1: string, arg2: string) => void;
 
-function message_add_wrapper (content: string, type: string) {
-  data_send(content, type)
-  message_add('', content, type)
+function messageAddWrapper (content: string, type: string) {
+    dataSend(content, type);
+    messageAdd('', content, type);
 }
 
-function message_add (sender: string, content: string, type: string) {
-  let finalHTML: string
-  if (sender) {
-    finalHTML = '<div class="message"><p class="info">' + sender + ' ' + get_datetime() + '</p>'
-  } else {
-    finalHTML = '<div class="message"><p class="info self">' + username + ' ' + get_datetime() + '</p>'
-  }
-  finalHTML += html_construct(content, type)
-  finalHTML += '</div>'
-  message_area.innerHTML += finalHTML
-  message_area.scrollTop = message_area.scrollHeight - message_area.clientHeight
+function messageAdd (sender: string, content: string, type: string) {
+    let finalHTML: string;
+    if (sender) {
+        finalHTML = '<div class="message"><p class="info">' + sender + ' ' + getDatetime() + '</p>';
+    } else {
+        finalHTML = '<div class="message"><p class="info self">' + username + ' ' + getDatetime() + '</p>';
+    }
+    finalHTML += HTMLConstruct(content, type);
+    finalHTML += '</div>';
+    messageArea.innerHTML += finalHTML;
+    messageArea.scrollTop = messageArea.scrollHeight - messageArea.clientHeight;
 }
 
 form.addEventListener('submit', function (_event) {
-  message_add_wrapper(input_area.value, 'text')
-})
+    messageAddWrapper(inputArea.value, 'text');
+});
 
-function upload_image (file: string) {
-  message_add_wrapper(file, 'image')
+function uploadImage (file: string) {
+    messageAddWrapper(file, 'image');
 }
 
-function upload (files: string[]) {
-  files.forEach(function (file) {
-    const filename = file.split('/').slice(-1)[0]!
-    message_add_wrapper(filename, 'file')
-  })
+function uploadFiles (files: string[]) {
+    files.forEach(function (file) {
+        const filename = file.split('/').slice(-1)[0]!;
+        messageAddWrapper(filename, 'file');
+    });
 }
 
 document.getElementById('image_select')!.addEventListener('click', function (_event) {
-  dialog.showOpenDialog(mainWindow, {
-    title: '打开图片',
-    properties: ['openFile'],
-    filters: [
-      { name: '图片文件', extensions: ['xbm', 'tif', 'pjp', 'svgz', 'jpg', 'jpeg', 'ico', 'tiff', 'gif', 'svg', 'jfif', 'webp', 'png', 'bmp', 'pjpeg', 'avif'] }
-    ]
-  }, function (files: string) {
-    if (files) {
-      if (files[0]) {
-        // console.log(files[0]);
-        upload_image(files[0])
-      }
-    }
-  })
-})
+    dialog.showOpenDialog(mainWindow, {
+        title: '打开图片',
+        properties: ['openFile'],
+        filters: [
+            { name: '图片文件', extensions: ['xbm', 'tif', 'pjp', 'svgz', 'jpg', 'jpeg', 'ico', 'tiff', 'gif', 'svg', 'jfif', 'webp', 'png', 'bmp', 'pjpeg', 'avif'] }
+        ]
+    }, function (files: string) {
+        if (files) {
+            if (files[0]) {
+                // console.log(files[0]);
+                uploadImage(files[0]);
+            }
+        }
+    });
+});
 
 document.getElementById('file_select')!.addEventListener('click', function (_event) {
-  dialog.showOpenDialog(mainWindow, {
-    title: '打开文件',
-    properties: ['openFile', 'multiSelections'],
-    filters: [
-      { name: '所有文件', extensions: ['*'] }
-    ]
-  }, function (files: string[]) {
-    if (files) {
-      console.log(files)
-      upload(files)
+    dialog.showOpenDialog(mainWindow, {
+        title: '打开文件',
+        properties: ['openFile', 'multiSelections'],
+        filters: [
+            { name: '所有文件', extensions: ['*'] }
+        ]
+    }, function (files: string[]) {
+        if (files) {
+            console.log(files);
+            uploadFiles(files);
+        }
+    });
+});
+
+function uplistUpdate (address: string, name: string) {
+    if (name) {
+        uplist.innerHTML += '<div class="connection_entry" id="' + address + '"><span class="person">' + name + '</span><span class="address">(' + address + ')</span></div>';
+    } else {
+        const entry = document.getElementById(address);
+        entry!.parentNode!.removeChild(entry!);
     }
-  })
-})
-
-function up_list_update (address: string, name: string) {
-  if (name) {
-    up_list.innerHTML += '<div class="connection_entry" id="' + address + '"><span class="person">' + name + '</span><span class="address">(' + address + ')</span></div>'
-  } else {
-    const entry = document.getElementById(address)
-        entry!.parentNode!.removeChild(entry!)
-  }
 }
 
-function update_username (event: KeyboardEvent | null) {
-  if (event) {
-    console.log(event.key)
-    if (event.key != 'Enter') {
-      return
+function updateUsername (event: KeyboardEvent | null) {
+    if (event) {
+        console.log(event.key);
+        if (event.key !== 'Enter') {
+            return;
+        }
     }
-  }
-  username = (<HTMLInputElement>document.getElementById('username')!).value
-  if (!username) {
-    return
-  }
-  username_wrapper.style.display = 'none'
-  username_label.innerText += username
-  up_list_update('localhost', username)
-  if (data_send_raw) {
-    data_send_raw(separater_special + 'NAME' + separater + username, '')
-  }
-  if (main_wrapper.style.display == 'none') {
-    main_wrapper.style.display = 'block'
-  }
+    username = (<HTMLInputElement>document.getElementById('username')!).value;
+    if (!username) {
+        return;
+    }
+    usernameWrapper.style.display = 'none';
+    usernameLabel.innerText += username;
+    uplistUpdate('localhost', username);
+    if (dataSendRaw) {
+        dataSendRaw(separaterSpecial + 'NAME' + separater + username, '');
+    }
+    if (mainWrapper.style.display === 'none') {
+        mainWrapper.style.display = 'block';
+    }
 }
 
-document.getElementById('username_submit')!.addEventListener('click', (_event) => { update_username(null) })
-document.getElementById('username')!.addEventListener('keydown', update_username)
+document.getElementById('username_submit')!.addEventListener('click', (_event) => { updateUsername(null); });
+document.getElementById('username')!.addEventListener('keydown', updateUsername);
 
-function reset_username () {
-  username_wrapper.style.display = 'block'
-  username_label.innerText = '用户名：'
-  up_list_update('localhost', '')
+// eslint-disable-next-line no-unused-vars
+function resetUsername () {
+    usernameWrapper.style.display = 'block';
+    usernameLabel.innerText = '用户名：';
+    uplistUpdate('localhost', '');
 }
 
-input_area.addEventListener('keydown', (event) => {
-  // ctrl + enter
-  if (event.ctrlKey && event.key == 'Enter') {
-    message_add_wrapper(input_area.value, 'text')
-    input_area.value = ''
-  }
-})
+inputArea.addEventListener('keydown', (event) => {
+    // ctrl + enter
+    if (event.ctrlKey && event.key === 'Enter') {
+        messageAddWrapper(inputArea.value, 'text');
+        inputArea.value = '';
+    }
+});
 
-const port: number = 14622
+const port: number = 14622;
 
+// eslint-disable-next-line no-unused-vars
 function end () {
-  server?.close()
-  socket?.end()
-  socket?.destroy()
+    server?.close();
+    socket?.end();
+    socket?.destroy();
 }
 
-function update_main_server_address (event: KeyboardEvent | null) {
-  if (event) {
-    if (event.key != 'Enter') {
-      return
+function updateMainServerAddress (event: KeyboardEvent | null) {
+    if (event) {
+        if (event.key !== 'Enter') {
+            return;
+        }
     }
-  }
-  const main_server_address = (<HTMLInputElement>document.getElementById('server_address')).value
-  if (main_server_address) {
-    start_client(main_server_address)
-  } else {
-    start_server()
-  }
+    const mainServerAddress = (<HTMLInputElement>document.getElementById('server_address')).value;
+    if (mainServerAddress) {
+        startClient(mainServerAddress);
+    } else {
+        startServer();
+    }
 }
-document.getElementById('update_server_address')!.addEventListener('click', _event => { update_main_server_address(null) })
-document.getElementById('server_address')!.addEventListener('keydown', event => { update_main_server_address(event) })
+document.getElementById('update_server_address')!.addEventListener('click', _event => { updateMainServerAddress(null); });
+document.getElementById('server_address')!.addEventListener('keydown', event => { updateMainServerAddress(event); });
 
-const address_name_dict: { [index: string]: string } = {}
+const addressNameDict: { [index: string]: string } = {};
 
-function data_receive (name: string, data: string[]) {
-  message_add(name, data[0]!, data[1]!)
-  mainWindow.flashFrame(true)
+function dataReceive (name: string, data: string[]) {
+    messageAdd(name, data[0]!, data[1]!);
+    mainWindow.flashFrame(true);
 }
 
-function start_server () {
-  const address_connection_dict: { [index: string]: Socket } = {}
+function startServer () {
+    const addressConnectionDict: { [index: string]: Socket } = {};
 
-  function get_processed_address (connection: Socket) { // 10.10.10.10, 12345
+    function getProcessedAddress (connection: Socket) { // 10.10.10.10, 12345
     // 前两个在关闭连接时会变成undefined
     // return connection.localAddress + ', ' + connection.localPort + ', ' + connection.remoteAddress + ', ' + connection.remotePort;
-    return connection.remoteAddress + separater_port + connection.remotePort
-  }
-
-  data_send = (content: string, type: string) => {
-    data_send_raw(content + separater + type, '')
-  }
-
-  data_send_raw = (str: string, exclude: string) => {
-    for (const address in address_connection_dict) {
-      // check if the property/key is defined in the object itself, not in parent
-      if (address == exclude) continue
-      if (address_connection_dict.hasOwnProperty(address)) {
-                address_connection_dict[address]!.write(str)
-      }
+        return connection.remoteAddress + separaterPort + connection.remotePort;
     }
-  }
 
-  function data_receive_wrapper (address: string, data: Buffer) {
-    const data_string: string = data.toString()
-    if (data_string.startsWith(separater_special)) {
-      const data_array: string[] = data_string.slice(separater_length).split(separater)
-      if (data_array[0] == 'NAME') { // :NAME|chi1
-        if (address_name_dict.hasOwnProperty(address)) {
-          up_list_update(address, '')
-          up_list_update(address, data_array[1]!)
-        } else {
-          up_list_update(address, data_array[1]!)
+    dataSend = (content: string, type: string) => {
+        dataSendRaw(content + separater + type, '');
+    };
+
+    dataSendRaw = (str: string, exclude: string) => {
+        for (const address in addressConnectionDict) {
+            // check if the property/key is defined in the object itself, not in parent
+            if (address === exclude) continue;
+            if (Object.hasOwnProperty.call(addressConnectionDict, address)) {
+                addressConnectionDict[address]!.write(str);
+            }
         }
-        address_name_dict[address] = data_array[1]!
-        data_send_raw(separater_special + 'CLIENT' + separater + 'NAME' + separater + data_string[1] + separater + address, address)
-      }
-    } else { // test123|text
-      data_receive(address_name_dict[address]!, data_string.split(separater))
-      data_send_raw(separater_special + 'CLIENT' + separater + 'RELAY' + separater + address + separater + data_string, address)
+    };
+
+    function dataReceiveWrapper (address: string, data: Buffer) {
+        const dataString: string = data.toString();
+        if (dataString.startsWith(separaterSpecial)) {
+            const dataArray: string[] = dataString.slice(separaterLength).split(separater);
+            if (dataArray[0] === 'NAME') { // :NAME|chi1
+                if (Object.hasOwnProperty.call(addressNameDict, address)) {
+                    uplistUpdate(address, '');
+                    uplistUpdate(address, dataArray[1]!);
+                } else {
+                    uplistUpdate(address, dataArray[1]!);
+                }
+                addressNameDict[address] = dataArray[1]!;
+                dataSendRaw(separaterSpecial + 'CLIENT' + separater + 'NAME' + separater + dataArray[1] + separater + address, address);
+            }
+        } else { // test123|text
+            dataReceive(addressNameDict[address]!, dataString.split(separater));
+            dataSendRaw(separaterSpecial + 'CLIENT' + separater + 'RELAY' + separater + address + separater + dataString, address);
+        }
     }
-  }
 
-  function send_username_dict () {
-    data_send_raw(separater_special + 'CLIENT' + separater + 'DICT' + separater + JSON.stringify(address_name_dict), '')
-  }
+    // eslint-disable-next-line no-unused-vars
+    function sendUsernameDict () {
+        dataSendRaw(separaterSpecial + 'CLIENT' + separater + 'DICT' + separater + JSON.stringify(addressNameDict), '');
+    }
 
-  server = createServer()
-  server.listen(port)
+    server = createServer();
+    server.listen(port);
 
-  server.on('connection', function (socket) {
-    socket.setNoDelay(true)
-    const address = get_processed_address(socket)
+    server.on('connection', function (socket) {
+        socket.setNoDelay(true);
+        const address = getProcessedAddress(socket);
 
-    address_connection_dict[address] = socket
+        addressConnectionDict[address] = socket;
 
-    socket.write(separater_special + 'NAME' + separater + username)
+        socket.write(separaterSpecial + 'NAME' + separater + username);
 
-    socket.on('data', (data) => {
-      data_receive_wrapper(address, data)
-    })
+        socket.on('data', (data) => {
+            dataReceiveWrapper(address, data);
+        });
 
-    socket.on('end', function () {
-      delete address_name_dict[address]
-      delete address_connection_dict[address]
-      up_list_update(address, '')
-    })
+        socket.on('end', function () {
+            delete addressNameDict[address];
+            delete addressConnectionDict[address];
+            uplistUpdate(address, '');
+        });
 
-    socket.on('error', function (err) {
-      console.log(`Error: ${err}`)
-            error_message!.innerText = '网络错误：' + err
-    })
-  })
+        socket.on('error', function (err) {
+            console.log(`Error: ${err}`);
+            errorMessage!.innerText = '网络错误：' + err;
+        });
+    });
 }
 
 // TODO:NEED URGENT REFRACTORING!!!
-function start_client (server_address: string) {
-  const server_address_port = server_address + separater_port + port
-  console.log(server_address_port)
-  function data_receive_wrapper (data: Buffer) {
-    const data_string: string = data.toString()
-    if (data_string.startsWith(separater_special)) {
-      const data_array: string[] = data_string.slice(separater_length).split(separater)
-      if (data_array[0] == 'CLIENT') {
-        if (data_array[1] == 'NAME') { // :CLIENT|NAME|chi2|10.10.10.10,12348
-          const address: string = data_array[3]!
-          if (address_name_dict.hasOwnProperty(address)) {
-            up_list_update(address, '')
-            up_list_update(address, data_array[2]!)
-          } else {
-            up_list_update(address, data_array[2]!)
-          }
-          address_name_dict[address] = data_array[2]!
-        } else if (data_array[1] == 'LOGOUT') { // :CLIENT|LOGOUT|10.10.10.10,12348
-          const address: string = data_array[2]!
-          delete address_name_dict[address]
-          up_list_update(address, '')
-        } else if (data_array[1] == 'RELAY') { // :CLIENT|RELAY|10.10.10.10,12348|test123|text
-          const address: string = data_array[2]!
-          data_receive(address_name_dict[address]!, [data_array[3]!, data_array[4]!])
-        } else if (data_array[1] == 'DICT') { // :CLIENT|DICT|{"10.10.10.10,12348", "chi2"}
-          const address_name_dict_temp: { [index: string]: string } = JSON.parse(data_array[2]!)
-          for (const address in address_name_dict_temp) {
-            // check if the property/key is defined in the object itself, not in parent
-            if (address_name_dict_temp.hasOwnProperty(address)) {
-              if (address == 'localhost' || address_name_dict_temp[address] == username) {
-                continue
-              }
+function startClient (serverAddress: string) {
+    const serverAddressPort = serverAddress + separaterPort + port;
+    console.log(serverAddressPort);
+    function dataReceiveWrapper (data: Buffer) {
+        const dataString: string = data.toString();
+        if (dataString.startsWith(separaterSpecial)) {
+            const dataArray: string[] = dataString.slice(separaterLength).split(separater);
+            if (dataArray[0] === 'CLIENT') {
+                if (dataArray[1] === 'NAME') { // :CLIENT|NAME|chi2|10.10.10.10,12348
+                    const address: string = dataArray[3]!;
+                    if (Object.hasOwnProperty.call(addressNameDict, address)) {
+                        uplistUpdate(address, '');
+                        uplistUpdate(address, dataArray[2]!);
+                    } else {
+                        uplistUpdate(address, dataArray[2]!);
+                    }
+                    addressNameDict[address] = dataArray[2]!;
+                } else if (dataArray[1] === 'LOGOUT') { // :CLIENT|LOGOUT|10.10.10.10,12348
+                    const address: string = dataArray[2]!;
+                    delete addressNameDict[address];
+                    uplistUpdate(address, '');
+                } else if (dataArray[1] === 'RELAY') { // :CLIENT|RELAY|10.10.10.10,12348|test123|text
+                    const address: string = dataArray[2]!;
+                    dataReceive(addressNameDict[address]!, [dataArray[3]!, dataArray[4]!]);
+                } else if (dataArray[1] === 'DICT') { // :CLIENT|DICT|{"10.10.10.10,12348", "chi2"}
+                    const addressNameDictTemp: { [index: string]: string } = JSON.parse(dataArray[2]!);
+                    for (const address in addressNameDictTemp) {
+                        // check if the property/key is defined in the object itself, not in parent
+                        if (Object.hasOwnProperty.call(addressNameDictTemp, address)) {
+                            if (address === 'localhost' || addressNameDictTemp[address] === username) {
+                                continue;
+                            }
 
-              const temp_name = address_name_dict_temp[address]!
-              if (address_name_dict.hasOwnProperty(address)) {
-                if (address_name_dict[address] != temp_name) {
-                  up_list_update(address, '')
-                  up_list_update(address, temp_name)
+                            const tempName = addressNameDictTemp[address]!;
+                            if (Object.hasOwnProperty.call(addressNameDict, address)) {
+                                if (addressNameDict[address] !== tempName) {
+                                    uplistUpdate(address, '');
+                                    uplistUpdate(address, tempName);
+                                }
+                            } else {
+                                addressNameDict[address] = tempName;
+                                uplistUpdate(address, tempName);
+                            }
+                        }
+                    }
                 }
-              } else {
-                address_name_dict[address] = temp_name
-                up_list_update(address, temp_name)
-              }
+            } else if (dataArray[0] === 'NAME') { // :NAME|chi1
+                addressNameDict[serverAddressPort] = dataArray[1]!;
+                uplistUpdate(serverAddressPort, dataArray[1]!);
             }
-          }
+        } else { // test123|text
+            dataReceive(addressNameDict[serverAddressPort]!, dataString.split(separater));
         }
-      } else if (data_array[0] == 'NAME') { // :NAME|chi1
-        address_name_dict[server_address_port] = data_array[1]!
-        up_list_update(server_address_port, data_array[1]!)
-      }
-    } else { // test123|text
-      data_receive(address_name_dict[server_address_port]!, data_string.split(separater))
     }
-  }
 
-  data_send = (content: string, type: string) => {
-    socket.write(content + separater + type)
-  }
+    dataSend = (content: string, type: string) => {
+        socket.write(content + separater + type);
+    };
 
-  data_send_raw = (str: string, _exclude: string) => { socket.write(str) }
+    dataSendRaw = (str: string, _exclude: string) => { socket.write(str); };
 
-  socket = connect(port, server_address)
-  socket.setNoDelay(true)
+    socket = connect(port, serverAddress);
+    socket.setNoDelay(true);
 
-  socket.write(separater_special + 'NAME' + separater + username)
+    socket.write(separaterSpecial + 'NAME' + separater + username);
 
-  socket.on('data', data_receive_wrapper)
+    socket.on('data', dataReceiveWrapper);
 
-  socket.on('error', function (err) {
-    console.log(`Error: ${err}`)
-        error_message!.innerText = '网络错误：' + err
-  })
+    socket.on('error', function (err) {
+        console.log(`Error: ${err}`);
+        errorMessage!.innerText = '网络错误：' + err;
+    });
 
-  // socket.on('close', function() {
-  //     console.log('Connection closed');
-  // });
+    // socket.on('close', function() {
+    //     console.log('Connection closed');
+    // });
 }
